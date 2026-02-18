@@ -11,6 +11,7 @@ import requests
 _CACHED_TOKEN: str | None = None
 
 
+# Fetches and caches bearer token for model-as-a-service authentication.
 def _get_token() -> str:
     global _CACHED_TOKEN
     if _CACHED_TOKEN:
@@ -36,7 +37,7 @@ def _get_token() -> str:
     return token
 
 
-# Removed token limit restriction
+# Builds multimodal message content with text and optional base64-embedded images.
 def _build_content(prompt: str, image_paths: List[str] | None = None) -> Any:
     if not image_paths:
         return prompt
@@ -60,6 +61,7 @@ def _build_content(prompt: str, image_paths: List[str] | None = None) -> Any:
     return content
 
 
+# Calls the chat-completions endpoint and returns assistant text content.
 def generate_text(prompt: str, max_tokens: int = 100000, image_paths: List[str] | None = None) -> str:
     model_base_url = "https://daia.privatelink.azurewebsites.net/model-as-a-service"
     model = os.getenv("MODEL_AS_A_SERVICE_MODEL", "gpt-5")
@@ -84,13 +86,14 @@ def generate_text(prompt: str, max_tokens: int = 100000, image_paths: List[str] 
         raise RuntimeError(f"Unexpected response format: {data}") from exc
 
 
+# Provides a lightweight token estimate based on character count.
 def estimate_tokens(text: str) -> int:
     if not text:
         return 0
     return max(1, len(text) // 4)
 
 
-# Removed token limit restriction
+# Executes generation and returns output plus estimated token usage metadata.
 def generate_text_with_usage(
     prompt: str,
     max_tokens: int = 100000,

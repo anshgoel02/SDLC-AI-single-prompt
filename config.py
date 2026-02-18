@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import Set
 
 
+# File types the agent can ingest from input paths.
 SUPPORTED_EXTENSIONS: Set[str] = {
     ".txt",
     ".md",
@@ -281,6 +282,7 @@ INPUTS_TEXT:
 # OPTIONAL_BROWNFIELD:
 # {BROWNFIELD_TEXT}
 
+# Runtime settings for default output locations.
 @dataclass(frozen=True)
 class Settings:
     default_output_dir: str = "brd_agent_single"

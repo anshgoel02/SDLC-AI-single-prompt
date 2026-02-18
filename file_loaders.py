@@ -18,6 +18,7 @@ except Exception:
     Document = None
 
 
+# Extracts and concatenates text from all pages in a PDF file.
 def read_pdf_text(path: Path) -> str:
     reader = PdfReader(str(path))
     parts = []
@@ -26,6 +27,7 @@ def read_pdf_text(path: Path) -> str:
     return "\n".join(parts)
 
 
+# Extracts text content from all shapes across all slides in a PPTX file.
 def read_pptx_text(path: Path) -> str:
     if Presentation is None:
         return ""
@@ -38,6 +40,7 @@ def read_pptx_text(path: Path) -> str:
     return "\n".join(parts)
 
 
+# Extracts paragraph text from a DOCX file.
 def read_docx_text(path: Path) -> str:
     if Document is None:
         return ""
@@ -45,6 +48,7 @@ def read_docx_text(path: Path) -> str:
     return "\n".join(p.text for p in doc.paragraphs if p.text)
 
 
+# Loads text content from supported non-image files by extension.
 def load_source_text(path: Path) -> str:
     suffix = path.suffix.lower()
     if suffix == ".pdf":
@@ -56,6 +60,7 @@ def load_source_text(path: Path) -> str:
     return path.read_text(encoding="utf-8", errors="ignore")
 
 
+# Returns whether the path points to a supported image format.
 def is_image_file(path: Path) -> bool:
     return path.suffix.lower() in {
         ".png",
@@ -69,6 +74,7 @@ def is_image_file(path: Path) -> bool:
     }
 
 
+# Yields supported files from input paths (files or recursive directories).
 def iter_input_files(paths: Sequence[str]) -> Iterable[Path]:
     for raw in paths:
         path = Path(raw)

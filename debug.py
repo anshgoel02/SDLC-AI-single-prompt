@@ -5,6 +5,7 @@ import json
 from .models import BRDState
 
 
+# Prints the current graph state in JSON form for troubleshooting.
 def debug_state(node_name: str, state: BRDState) -> None:
     print(f"[debug] {node_name} state:")
     try:

@@ -18,6 +18,7 @@ except Exception:
     Document = None
 
 
+# Returns a minimal fallback BRD when model output cannot be parsed.
 def _fallback_brd() -> str:
     return """## Executive Summary
 - TBC
@@ -30,6 +31,7 @@ def _fallback_brd() -> str:
 """
 
 
+# Wraps the base prompt with a strict JSON schema requirement for structured output.
 def _document_schema_prompt(base_prompt: str) -> str:
     return f"""{base_prompt}
 
@@ -77,6 +79,7 @@ Rules:
 """
 
 
+# Extracts and validates the document spec JSON object from model output text.
 def _extract_doc_spec(output: str) -> dict[str, Any] | None:
     text = output.strip()
     if not text:
@@ -100,6 +103,7 @@ def _extract_doc_spec(output: str) -> dict[str, Any] | None:
     return parsed
 
 
+# Converts the structured document spec into Markdown text.
 def _doc_spec_to_markdown(spec: dict[str, Any]) -> str:
     lines: list[str] = []
     title = str(spec.get("title", "")).strip()
@@ -161,6 +165,7 @@ def _doc_spec_to_markdown(spec: dict[str, Any]) -> str:
     return "\n".join(lines).strip()
 
 
+# Renders the structured document spec directly to a .docx file.
 def _render_docx_from_spec(spec: dict[str, Any], output_path: str) -> None:
     if Document is None:
         raise RuntimeError("python-docx is required to write .docx output.")
@@ -229,6 +234,7 @@ def _render_docx_from_spec(spec: dict[str, Any], output_path: str) -> None:
     doc.save(output_path)
 
 
+# Single graph node: ingests inputs, generates BRD, handles retry/fallback, and persists outputs.
 def generate_brd_node(state: BRDState) -> BRDState:
     print("[node] generate_brd")
 
@@ -313,6 +319,7 @@ def generate_brd_node(state: BRDState) -> BRDState:
     return state
 
 
+# Builds the one-node LangGraph workflow for BRD generation.
 def build_graph() -> StateGraph:
     graph = StateGraph(BRDState)
     graph.add_node("generate_brd", generate_brd_node)

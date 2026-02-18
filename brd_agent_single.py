@@ -21,6 +21,7 @@ from brd_agent_single.graph import build_graph
 from brd_agent_single.models import BRDState
 
 
+# Parses CLI arguments for input sources and output file locations.
 def parse_args() -> argparse.Namespace:
     settings = Settings()
     parser = argparse.ArgumentParser(description="Single-node BRD generation agent")
@@ -43,6 +44,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
+# Initializes runtime dependencies and executes the compiled graph.
 def main() -> None:
     load_dotenv()
     args = parse_args()
