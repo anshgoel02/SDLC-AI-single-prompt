@@ -154,6 +154,9 @@ SUPPORTED_EXTENSIONS: Set[str] = {
 
 # Prompt 4
 SYSTEM_USER_PROMPT = """
+Return valid JSON only. Ensure the response is a single JSON object.
+
+
 SYSTEM
 You are an expert Business Analyst. Your task is to produce a high-quality Business Requirements Document (BRD) from the provided requirements notes.
  

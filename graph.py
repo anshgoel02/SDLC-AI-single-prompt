@@ -268,7 +268,7 @@ def generate_brd_node(state: BRDState) -> BRDState:
         )
         output, usage = generate_text_with_usage(
             retry_prompt,
-            max_tokens=30000,
+            max_tokens=100000,
             image_paths=state.image_paths,
         )
         spec = _extract_doc_spec(output)
