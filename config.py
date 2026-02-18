@@ -154,10 +154,10 @@ SUPPORTED_EXTENSIONS: Set[str] = {
 #   If false: you may omit sections that are clearly not applicable to the described initiative.
 
 # Prompt 4
+
+# - Output must be a single Markdown document. No JSON. No explanations of your steps.
+
 SYSTEM_USER_PROMPT = """
-Return valid JSON only. Ensure the response is a single JSON object.
-
-
 SYSTEM
 You are an expert Business Analyst. Your task is to produce a high-quality Business Requirements Document (BRD) from the provided requirements notes.
  
@@ -168,7 +168,7 @@ Rules:
 - Do not mention internal process notes like “raw notes not provided” unless INPUTS_TEXT is empty.
 - Keep the BRD business-professional and easy to review: bullets over long paragraphs; clear headings; minimal repetition.
 - Where the input is ambiguous, choose the most neutral interpretation and add a question in “Open Questions”.
-- Output must be a single Markdown document. No JSON. No explanations of your steps.
+
  
 USER
 GOAL
