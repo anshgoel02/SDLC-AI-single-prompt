@@ -1,238 +1,308 @@
-# Business Requirements Document (BRD) – R&D Sensory UX Data Platform Phase 2
+# R&D Sensory UX Data Platform - Phase 2 BRD
 
-# 0. Header Information
+# # 0. Header Information
 
-| Field | Value |
-| --- | --- |
-| Project Name | R&D Sensory UX Data Platform – Phase 2 Enhancements |
-| Date | 2025-05-30 |
-| Status | Draft for Review |
-| Document Owner | Angela Li (R&D Sensory), Jenn Soong (Data Admin) |
-| Version | 0.1 |
+- Project Name: R&D Sensory UX Data Platform (Stakeholder & Vendor Portals + Transformation Engine)
+- Date: 2026-02-19
+- Status: Draft
+- Document Owner: R&D Sensory UX (Angela Li, Jenn Soong)
+- Version: 0.1
 
-# 1. Executive Summary
+# # 1. Executive Summary
 
-- Purpose: Enhance the existing R&D Sensory UX application and data pipeline to improve efficiency, data quality, and usability for sensory and analytical testing.
-- What is being built: Phase 2 improvements to workflows (pre-approval, editing controls), vendor and internal portals, data transformation engine accuracy, UI/UX, and data quality validations; support for non‑product projects; reporting enhancements.
-- Who benefits: Sensory UX leads, R&D leads, line managers, sensory directors, analytical team members, external accredited sensory agencies (vendors), and data/BI teams.
-- Intended outcomes: Faster turnaround from test initiation to insight; reduced manual rework; improved data integrity; better collaboration and approvals; scalable global usage.
-- Context: Current system live since early March 2025 with ~45 incidents resolved/stabilizing; app supports global users and external vendors; Power BI reporting consumes curated sensory schema tables.
-- Key priorities: Improve AI-based transformation matching accuracy, add pre‑RFP approval, allow post‑completion admin edits to data with governance, enable multi‑editor collaboration, better UX and data exports.
+- Purpose: Enhance the existing R&D Sensory UX data application to improve data quality, usability, and workflow efficiency across sensory and analytical testing.
+- What is being built: Phase 2 enhancements to the Power Apps solution comprising the Stakeholder Portal, Vendor Portal, and Data Transformation Module, plus reporting improvements.
+- Who benefits: Sensory UX leads, R&D leads, line managers, sensory directors, analytical leads, and approved external vendor partners.
+- Intended outcomes: Faster, more accurate ingestion of sensory/analytical data; reduced manual effort; improved approvals and governance; better visibility and search in completed tests; foundations for future predictive analytics.
+- Key themes: Pre-approval workflow, multi-user collaboration, bulk data handling, enhanced file visibility, data transformation accuracy, data quality standardization, UI/UX improvements, and gating to protect data integrity.
+- Out of scope: Predictive analytics, deep product information integration, and enterprise system integrations (e.g., SAP/Coupa) in this phase.
 
-# 2. Business Context & Problem Statement
+# # 2. Business Context & Problem Statement
 
 - Background / context:
-  - Custom Power Apps solution with three components: Stakeholder portal (internal), Vendor portal (external), and a data transformation module feeding SQL and Power BI.
-  - Data sources include sensory testing (consumer surveys and descriptive analysis) and analytical instrument measures; ~94% of overall data volume is sensory.
-  - Internal SQL database with initial ~19 sensory tables; total ~35 tables after app additions (R&D schema for app functions, sensory schema for curated reporting).
+  - A Power Apps-based solution went live in early March 2025 to capture sensory (consumer and descriptive) and analytical data via a Stakeholder Portal, Vendor Portal, and a Data Transformation engine. Data resides in Azure SQL (sensory schema) and feeds Power BI.
+  - The app supports global users (Europe, APAC, North America) with vendor submissions and internal approvals, and centralizes sample preparation details (SIF), micro clearance, and reports.
 - Current state (if stated):
-  - Go-live early March 2025; initial hypercare complete; now on basic incident support (1 Power Apps developer, 1 Python engineer from vendor).
-  - Reactive incident management (~45 tracked in Excel) with stabilization over three months; usage inferred via active tests rather than formal telemetry.
-  - Power BI reports consume sensory schema data once tests are concluded (holding/app tables push to sensory tables post-completion).
+  - In production ~3 months as of May 30, 2025; ~45 incidents tracked initially (stabilizing). Hypercare ended; two vendor resources provide incident-only support (Power Apps dev and Python engineer).
+  - Stakeholder Portal shows active and completed tests; Vendor Portal supports proposals, sample code entry, and test file uploads. Power BI reports visualize tests by region, test type, product, etc.
 - Problem / pain points:
-  - Transformation engine matching accuracy significantly below promised (often ~65% vs claimed 95%); supervised improvement not materializing.
-  - UX friction: heavy horizontal/vertical scrolling; poor visibility of uploaded files; limited search/filter; clunky admin for large lookups (700+ questions, 500+ attributes).
-  - Workflow gaps: no pre‑RFP approval; inability to edit data after test completion (changes don’t propagate to sensory schema); single‑editor constraint; SIF lacks bulk copy/paste and export.
-  - Data quality issues: inconsistent values (blank/NA variants), duplicate entries due to uncontrolled dropdowns and validation gaps.
-  - Security/observability gaps: no confirmed performance/security testing or proactive availability monitoring despite external vendor access.
+  - Poor UX (excessive scrolling, left-right navigation, limited file/link visibility, clunky admin lists).
+  - Data Transformation engine match accuracy is below expectations (observed ~65% in worst cases vs. claimed 95%); supervised learning not improving over time.
+  - No pre-approval step prior to RFP causes churn; inability for DA to edit completed tests and propagate to reporting tables; non-product research projects cannot bypass SIF.
+  - Single-user lock on active tasks; lack of bulk copy/paste and export for SIF; limited search/filter on completed tests.
+  - Data quality issues (e.g., blanks/NA, duplicates) and non-scoped dropdowns leading to errors.
 - Why now / business drivers:
-  - Accelerate data-driven product insights and set foundation for future predictive analytics (formulation/process/material attributes integration).
-  - Reduce manual rework and admin overhead for data admins and leads; improve global vendor collaboration and reporting fidelity.
+  - Enable data-driven product and consumer insights with efficiency and accuracy; reduce manual rework and cycle time; improve data integrity and auditability; prepare structured data for future predictive analytics and potential integrations.
 
-# 3. Objectives & Success Metrics
+# # 3. Objectives & Success Metrics
 
 - Objectives:
-  - Increase transformation engine mapping accuracy and reduce manual review effort.
-  - Introduce pre‑RFP approval and governance to prevent downstream rework.
-  - Enable post‑completion admin edits that propagate to curated tables with auditability.
-  - Improve UX (navigation, visibility, search/filter) and enable multi‑editor collaboration.
-  - Strengthen data quality validations and dropdown controls; support non‑product projects.
-  - Establish basic performance/security/availability baselines for an app with external access.
-- Success metrics / KPIs (where available):
-  - Transformation matching accuracy improved from observed ~65% to a higher defined threshold (target to be confirmed).
-  - Reduction in incident volume from initial ~45 (tracked) and decrease in recurring incidents (baseline tracked in Excel).
-  - Time to create SIF and process data reduced (baseline not stated; to be measured).
-  - Go-live stability for Phase 2 features without material increase in incidents.
+  - Introduce pre-approval and gating to ensure accurate RFPs and protect data integrity through to ingestion.
+  - Improve UX to reduce user effort (bulk operations, visibility, search/filter) and support multi-user collaboration.
+  - Increase accuracy and efficiency of the Data Transformation engine and intermediate file review.
+  - Enhance data quality controls and dropdown scoping to reduce duplicates and errors.
+  - Support non-product research projects without requiring SIF.
+- Success metrics / KPIs (use exact numbers if present):
+  - Target user base capacity: support 50–100 users within the first year globally.
+  - Reduce manual intermediate file review time per study (baseline not stated; measure delta after release).
+  - Decrease incident rate from initial ~45 hypercare issues to a stable, low volume (track post-release trend).
+  - Increase match verification acceptance rate on first pass (track % of questions with acceptable matches without manual correction).
 - Baseline (if stated):
-  - Transformation matching observed as low as ~65% for some studies; ~45 incidents logged post-launch.
+  - No quantified baseline for transformation accuracy other than observations (worst case ~65% match).
 - Measurement cadence & owners (if stated):
-  - Not specified; current tracking is ad hoc (Excel). Owners: Data Admins (Angela, Jenn).
+  - Not stated; Data Admins (Angela Li, Jenn Soong) currently monitor via incidents and manual tracking.
 
-# 4. Scope
+# # 4. Scope
 
-| In Scope (4.1) | Out of Scope (4.2) |
-| --- | --- |
-| Pre‑RFP approval workflow for sensory tests | Building a net-new predictive analytics application |
-| Admin post‑completion data edits that update sensory schema | Full integration with SAP/Coupa vendor master and PO systems (Phase 3/future) |
-| UX improvements: navigation, reduced scrolling, visibility of uploads, improved search/filter | Major re-platforming away from Power Apps |
-| SIF bulk copy/paste and export (Excel/PDF) | Vendor master data stewardship beyond application needs |
-| Multi‑editor collaboration on active tests | Rewriting existing reporting stack in non-Power BI tools |
-| Transformation engine accuracy and supervised matching enhancements |  |
-| Data quality validations and dropdown category controls |  |
-| Support for non‑product projects (no SIF) |  |
-| Conclude-test gate linked to data transformation completion |  |
-| Study name–project number automation with admin approval workflow |  |
+## ## 4.1 In Scope
 
-- 4.3 Constraints (only what is stated):
-  - Power Apps UX limitations cited by vendor; timeline/resource constraints impacted initial UX scope.
-  - External vendors require separate IDs and licenses; internal additions require platform team action.
-  - Support resources are scoped for incidents only, not enhancements.
-  - Data pushed to sensory schema only after test completion (current design).
+- Stakeholder Portal enhancements: pre-approval before RFP; editable RFP with propagation and re-approval; multi-user collaboration; gating test conclusion on Data Transformation completion; improved search/filter for completed tests; one-pager export.
+- Vendor Portal enhancements: clearer file visibility; dropdown category scoping; maintain equipment list; notifications.
+- Data Transformation Module improvements: configurable match thresholds, verification workflow with comments, improved mapping UX, and accurate ingestion to sensory schema.
+- Data quality controls: standardize NA/blank handling, deduplication checks, dropdown scoping (e.g., holding protocol types).
+- SIF efficiency: bulk copy/paste, export (Excel/PDF), and support for projects without SIF (non-product research).
+- Admin functions: dropdown management, bypass approvals, category mapping, hold protocol management, automatic study name from project number with approval, post-completion edit capability for Data Admins with propagation to reporting tables.
+- Reporting: improve filters/search on completed tests; Power BI consumption of final sensory schema remains.
+- Security & access: maintain role-based access, external vendor authentication via email-based accounts, internal users via AD.
 
-# 5. Stakeholders & Roles
+## ## 4.2 Out of Scope
+
+- Building predictive analytics or formulation success prediction.
+- Full integration with supplier/spec systems (e.g., TraceGains) in this phase.
+- Integration with SAP/Coupa (vendor master, PO) in this phase.
+- Mobile/tablet form factor optimization (laptop-only continues).
+- Redesign of Power BI content beyond adding filters/search in the app context.
+
+## ## 4.3 Constraints (only what is stated)
+
+- Power Apps UX limitations cited by current vendor; previous pushback on more advanced UI layouts.
+- External vendors require separate licensed access; provisioning coordinated with platform team.
+- Support team is incident-only; enhancements require separate budgeting and planning.
+- Laptop form factor only due to data entry volume.
+- Global user base across regions (Europe, APAC, North America).
+
+# # 5. Stakeholders & Roles
 
 | Role/Group | Responsibilities | Access/View (if stated) | Notes |
 | --- | --- | --- | --- |
-| Sensory UX Lead | Create RFP; manage vendor interactions; prepare one-pager; submit reports; conclude tests | Access to own tests and peers’ completed tests |  |
-| R&D Lead | Complete Sample Information Form (SIF); micro clearance acknowledgments | Access to assigned tests/SIF |  |
-| Line Manager | Approve one-pager/proposals; review final reports | Approval views; limited scope currently | Requested capability to complete full test workflow if they oversee testing |
-| Sensory Director | Approve one-pager/proposals; review final reports | Approval views |  |
-| Analytical Lead | Create internal analytical tests; upload instrument data | No approvals in analytical workflow |  |
-| Data Admin (e.g., Angela, Jenn) | Administer users/vendors/dropdowns; bypass approvals; manage transformation reviews; manage categories; maintain data | Admin view of all tests; app admin features | Seek post-completion edit capabilities and automation |
-| Vendor (External Agency) | View RFP details and SIF; submit proposals, raw data, and reports; enter sample codes and equipment | Vendor portal with limited access | Separate authentication (email-based); license required |
-| Platform Team (e.g., Kaushal) | Provision licenses/access for internal/external users | N/A | Must be notified for user provisioning |
-| Support Engineers (Vendor) | Incident support only: Power Apps developer and Python engineer for transformation | N/A | Not currently chartered for enhancements |
+| Sensory UX Lead | Initiate RFP; manage test workflow; send one-pager for approval; coordinate vendor; upload McCain report; conclude test | Own tests; peers' completed tests | Primary workflow owner for sensory studies |
+| Line Manager | Approve RFP/one-pager; review final report; may oversee testing | Approval views | Needs capability to complete workflow if overseeing testing |
+| Sensory Director | Approve RFP/one-pager and reports; provide comments | Approval views | Final approver |
+| R&D Lead | Provide Sample Information Form (SIF) details; micro clearance date | SIF entry for assigned tests | Receives notifications to complete SIF |
+| Analytical Lead | Initiate and manage analytical tests (simplified workflow, no approvals); upload data/reports | Analytical workflow screens | Internal instrument measures (e.g., texture, oil) |
+| Vendor | Submit proposals; enter sample codes; indicate equipment used; upload test files/reports | Limited to their proposals, SIF codes, uploads | External users; separate email-based login |
+| Data Admin | Oversee data quality; manage dropdowns; category mapping; bypass approvals; user mgmt; verify transformation; manage intermediate/output files; admin all tests | Admin view (all tests, admin menus) | Can add vendors/internal users (with platform support); requires post-completion edit capability |
+| Platform/IT (AD/Access) | Provision access/licenses for users (internal and external) | N/A | External vendor licenses incur cost; internal users no cost |
+| Power Apps Support (Vendor) | Incident resolution for app workflow | N/A | One resource (Power Apps) for incidents only |
+| Python/Transformation Support (Vendor) | Incident resolution for transformation engine | N/A | One resource (Python) for incidents only |
 
-# 6. Functional Requirements
+# # 6. Functional Requirements
 
-1. [Pre‑RFP & Approvals] FR-1: The system shall provide a pre‑RFP approval step where Sensory UX Leads can submit a one‑pager to Line Manager and Sensory Director for approval prior to sending any RFP to vendors.
-2. [Pre‑RFP & Approvals] FR-2: The system shall allow approvers to approve or request changes on the pre‑RFP one‑pager with comments and return to the Sensory UX Lead.
-3. [Pre‑RFP & Approvals] FR-3: Upon approval of the pre‑RFP one‑pager, the system shall lock approved fields (as configured) and prefill them into the RFP sent to vendors.
-4. [Vendor Portal] FR-4: The system shall allow vendors to view RFP details and submit proposals; multiple vendor proposals per RFP shall be supported.
-5. [Vendor Portal] FR-5: The system shall notify Sensory UX Leads via email upon each vendor submission and status change.
-6. [Approvals] FR-6: The system shall support line manager and director approvals for proposals/one‑pager and final report with the ability to send back for changes.
-7. [Test Creation] FR-7: Upon proposal approval, the system shall create a Test ID and transition to the test execution phase.
-8. [SIF] FR-8: R&D Leads shall be able to complete and submit the Sample Information Form (SIF), including product info, cooking instructions, holding/delivery protocol, and equipment details.
-9. [SIF] FR-9: Vendors shall be able to enter per-sample codes (blinding/labels) and verify lot codes within the SIF view.
-10. [SIF] FR-10: The system shall provide bulk copy/paste for SIF data entry across multiple samples.
-11. [SIF] FR-11: The system shall provide SIF export to Excel and/or PDF.
-12. [SIF Dropdowns] FR-12: The system shall restrict dropdown options by category (e.g., primary package types show only primary; exclude secondary/delivery types).
-13. [Micro Clearance] FR-13: The system shall support micro clearance acknowledgments for pilot-line samples, captured by R&D Leads.
-14. [Vendor Files] FR-14: Vendors shall be able to upload raw data and reports to designated sections per test.
-15. [Admin – Vendors/Users] FR-15: Admins shall be able to manage vendor profiles and internal stakeholders, with triggers to notify the platform team for license/access provisioning.
-16. [Admin – Dropdowns] FR-16: Admins shall be able to manage dropdown lists (including three-level dependent lists such as country/region) via an interface, with bulk update support.
-17. [Admin – Bypass] FR-17: Admins shall be able to bypass specific approval steps when approvers are unavailable, with audit trail.
-18. [Data Transformation] FR-18: The system shall ingest vendor raw data into an intermediate file where mapping to canonical question IDs is proposed with match scores.
-19. [Data Transformation] FR-19: Data Admins shall be able to review intermediate mappings, annotate (remove/mismatch/new) and upload corrected intermediate files.
-20. [Data Transformation] FR-20: The system shall generate an output file restructured for database ingestion (e.g., respondent-level stacked responses) and load it to curated tables upon test completion.
-21. [Transformation Accuracy] FR-21: The system shall provide configurable match score thresholds and surface low-confidence mappings for manual review.
-22. [Conclude Test Gate] FR-22: The system shall prevent test conclusion until Data Admins confirm data transformation completion for that test (or allow admin override with justification).
-23. [Post‑Completion Edits] FR-23: Admins shall be able to edit select fields and raw data after test completion, with those changes propagating to the sensory schema and being fully audited.
-24. [Collaboration] FR-24: The system shall allow multiple assigned editors (e.g., multiple sensory team members) to work on active tests with conflict handling rules (e.g., field-level locking or last-writer-wins with change log).
-25. [Non‑Product Projects] FR-25: The system shall allow creation and tracking of projects that do not require a SIF (non‑product testing), without breaking workflow or reporting.
-26. [Study–Project Automation] FR-26: The system shall auto-populate valid Study Names based on an entered Project Number; if a Project Number is new, a request shall be routed to Admin for approval to add Study Name.
-27. [Reporting] FR-27: The system shall enable improved search and filter for completed tests (e.g., by region, test type, product) and provide visibility of which files are uploaded per section.
-28. [Document Generation] FR-28: The system shall generate a downloadable one‑pager (PowerPoint) populated from RFP/one‑pager fields.
-29. [Document Generation] FR-29: The system shall generate a McCain report template (PowerPoint) populated from test fields where defined.
-30. [Notifications] FR-30: The system shall send email notifications for key events (vendor submissions, approvals, SIF assignments, transformation review requests, conclusion readiness).
-31. [Security & Access] FR-31: The system shall authenticate external vendors using separate email-based credentials and restrict access strictly to their projects.
-32. [Security & Access] FR-32: The system shall authenticate internal users via the company directory and role-based access (view/edit limited to own tests and peers’ completed tests unless admin).
+## Stakeholder Portal – Sensory Workflow
 
-# 7. Non-Functional Requirements (NFRs)
+1. FR-1: The system shall provide a pre-approval step for the one-pager before any RFP is sent to vendors, requiring Line Manager and Sensory Director approval.
+2. FR-2: The system shall allow authorized users (Sensory UX Lead) to edit RFP/one-pager fields prior to vendor submission and, if edited after vendor submission, shall propagate changes to impacted vendors and trigger re-approval.
+3. FR-3: The system shall route one-pager approvals to Line Manager and Sensory Director with approve/reject and comment capture; rejections shall return the item to the Sensory UX Lead for revision.
+4. FR-4: The system shall support multi-user collaboration on active tests, allowing more than one Sensory UX team member to edit the same test workflow stages as configured by the owner.
+5. FR-5: The system shall capture SIF (product info, cooking instructions, holding protocol, delivery simulation, equipment) and allow bulk copy/paste of SIF entries from spreadsheets.
+6. FR-6: The system shall support projects without SIF (non-product research) by allowing test creation and progression without SIF dependencies.
+7. FR-7: The system shall capture micro clearance date from the R&D Lead and display clearance status to the Vendor.
+8. FR-8: The system shall allow the Sensory UX Lead to upload the final McCain report and route it for Line Manager and Sensory Director approval with comments.
+9. FR-9: The system shall gate test conclusion: concluding a test shall be blocked until Data Admins confirm Data Transformation completion for the study.
+10. FR-10: The system shall provide a Completed Tests view where users can view finalized test artifacts and entries.
+11. FR-11: The system shall provide improved search and filter for completed tests (e.g., by region, country, test type, product, status).
+12. FR-12: The system shall allow authorized Data Admins to edit test data even after test completion, and such edits shall propagate to the sensory schema tables and downstream reporting.
+13. FR-13: The system shall generate a one-pager PowerPoint from entered fields and allow download of the one-pager for sharing.
+14. FR-14: The system shall allow export of SIF data to Excel and/or PDF.
+15. FR-15: The system shall automatically suggest Study Name(s) based on entered Project Number; if a new Study Name is proposed, it shall route to Data Admin for approval and creation in Study Master.
 
-- Performance:
-  - NFR-1: The system shall maintain acceptable response times under concurrent usage by global users (specific targets TBD).
-  - NFR-2: The data transformation process shall complete within a reasonable time window for typical study files (target TBD based on current volumes).
-- Security & Access:
-  - NFR-3: The system shall segregate external vendor identities from internal directory users and enforce least-privilege access.
-  - NFR-4: The system shall undergo security testing appropriate for external access (e.g., vulnerability assessment) prior to Phase 2 release.
-- Availability & Reliability:
-  - NFR-5: Basic availability monitoring (URL health checks) and alerting shall be established for the application.
-  - NFR-6: Incident handling processes shall remain in place with defined escalation paths.
-- Usability & UX:
-  - NFR-7: UI shall minimize horizontal/vertical scrolling and clearly indicate uploaded file presence and status.
-  - NFR-8: Admin tools shall support bulk management of large reference lists (e.g., 700+ questions, 500+ attributes).
-- Auditability & Logging:
-  - NFR-9: All post‑completion data edits and approval bypasses shall be logged with user, timestamp, and change details.
-- Compliance & Privacy:
-  - NFR-10: The system shall handle respondent and vendor data in accordance with corporate privacy and data handling policies (details TBD).
-- Data Quality:
-  - NFR-11: The system shall validate and standardize common values (e.g., normalize blanks/NA) to prevent duplicates before writing to SQL.
-  - NFR-12: Dropdowns shall be category-filtered to avoid invalid selections and reduce data inconsistency.
+## Vendor Portal
 
-# 8. Data Requirements
+1. FR-16: The system shall allow vendors to view RFP details and submit proposals and cost estimates.
+2. FR-17: The system shall allow vendors to view SIF (as read-only) and enter sample codes that map to their raw data.
+3. FR-18: The system shall allow vendors to indicate equipment used, selecting from a vendor-specific list or adding new entries.
+4. FR-19: The system shall allow vendors to upload files to designated sections (e.g., raw data, reports), with clear on-screen indicators of uploaded vs. missing files.
+5. FR-20: The system shall restrict vendors to only their own proposals, samples, and file uploads.
+6. FR-21: The system shall notify the Sensory UX Lead via email upon vendor submissions (proposals, files).
 
-- 8.1 Entities / Objects (if stated):
-  - Proposal, Test, Vendor, Sample, SIF (product info, cooking, holding/delivery, equipment), Micro Clearance, Vendor Files (raw data, reports), McCain Report, Question, Attribute, Respondent, Product, Equipment, Packaging Types, Category Mapping, Study, Project Number, Budget/PO info, Notifications, Users/Roles.
-- 8.2 Key fields & validations (if stated):
-  - Project Number ↔ Study Name mapping (auto-populate; admin approval for new).
-  - Product fields (SKU, lot code, product type) mandatory for SIF where applicable.
-  - Dropdown category enforcement (e.g., primary vs secondary vs delivery packaging types).
-  - Validation to standardize blanks/NA and prevent duplicate entries.
-- 8.3 Data quality rules (if stated):
-  - Normalize common nulls (blank, NA, N/A) to a single representation.
-  - Deduplicate entries where semantically identical values are detected.
-  - Enforce allowed lists per category; flag out-of-domain values.
-  - Log all post-completion edits and ensure propagation to sensory schema.
+## Data Transformation Module
 
-# 9. Integrations & Interfaces
+1. FR-22: The system shall allow upload of raw data received from vendors in varying formats.
+2. FR-23: The system shall generate an Intermediate File that maps submitted questions to database questions with match scores and flags based on configurable thresholds (e.g., exact, check, poor).
+3. FR-24: The system shall allow Data Admins to annotate the Intermediate File with standardized comments (blank=accept, remove, mismatch+[corrected question ID], new+[new question details]).
+4. FR-25: The system shall generate the Output File, restructuring responses to the database format (e.g., stacked per respondent/product) and assigning question IDs based on verified mappings.
+5. FR-26: The system shall ingest the Output File into the sensory schema tables only upon completion of mapping verification.
+6. FR-27: The system shall display and store match scores for each question and provide a dashboard or view to prioritize poor or ambiguous matches for review.
+7. FR-28: The system shall maintain a code legend linking sample codes to products for accurate mapping.
+
+## Admin & Configuration
+
+1. FR-29: The system shall allow Data Admins to manage dropdown lists and dependent lists (e.g., country, region) within the app.
+2. FR-30: The system shall allow Data Admins to manage category mapping used by the transformation engine.
+3. FR-31: The system shall scope dropdowns by category (e.g., primary package type only shows primary options; secondary/delivery types not shown).
+4. FR-32: The system shall provide a bypass approvals feature for admins to advance items when approvers are unavailable, with audit logs.
+5. FR-33: The system shall allow Data Admins to manage Hold Protocol entries and streamline duplicate terms.
+6. FR-34: The system shall allow Admins to add vendors and internal users within the app and trigger provisioning requests to the platform team for account/license setup.
+
+## Security & Access
+
+1. FR-35: The system shall authenticate external vendors via separate email-based user accounts (not internal AD).
+2. FR-36: The system shall authenticate internal stakeholders via Active Directory.
+3. FR-37: The system shall enforce role-based access so that: internal users see their tests and peers' completed tests; vendors see only their items; admins see all.
+
+## Notifications
+
+1. FR-38: The system shall send email notifications to Sensory UX Leads upon vendor submissions (proposals, files).
+2. FR-39: The system shall send email notifications to R&D Leads when SIF input is requested.
+3. FR-40: The system shall notify approvers (Line Manager, Sensory Director) when items require approval and upon resubmission.
+4. FR-41: The system shall notify Data Admins when a new Study Name is proposed or when transformation verification is pending.
+5. FR-42: The system shall display an on-screen reminder when a Sensory UX Lead attempts to conclude a test before Data Transformation is marked complete.
+
+# # 7. Non-Functional Requirements (NFRs)
+
+## Performance
+
+1. NFR-1: The system shall support at least 100 named users globally in the first year.
+2. NFR-2: The system shall handle concurrent vendor uploads and internal edits without data loss (response time targets to be defined).
+
+## Security & Access
+
+1. NFR-3: External vendor access shall be isolated from internal AD; accounts are provisioned per vendor email and licensed accordingly.
+2. NFR-4: Role-based access controls shall be enforced throughout the application and data layers.
+3. NFR-5: Security testing for the externally accessible vendor portal shall be conducted and documented (scope and tooling TBD).
+
+## Availability & Reliability
+
+1. NFR-6: The system shall provide basic availability monitoring and alerting for outages (e.g., URL probes) with notifications to support.
+2. NFR-7: The system shall provide error handling for failed uploads/transformation steps with clear messages and retry capability.
+
+## Usability & UX
+
+1. NFR-8: High-usage forms (e.g., SIF, approvals) shall minimize scrolling and lateral navigation and present clear sectioning.
+2. NFR-9: File/link visibility shall clearly indicate uploaded vs. missing items without requiring individual link clicks.
+3. NFR-10: Bulk operations (copy/paste SIF entries, exports) shall be supported to reduce manual data entry.
+4. NFR-11: Laptop form factor shall be supported as the primary interface.
+
+## Auditability & Logging
+
+1. NFR-12: All approvals, rejections, comments, and bypass actions shall be logged with user, timestamp, and context.
+2. NFR-13: Post-completion edits by Data Admins shall be audited with before/after values and user attribution.
+
+## Data Quality
+
+1. NFR-14: The system shall standardize common nulls (e.g., blanks, NA) and prevent duplicate master entries through validation.
+2. NFR-15: Dropdowns shall be category-scoped to prevent invalid selections (e.g., primary vs. secondary package types).
+
+# # 8. Data Requirements
+
+## ## 8.1 Entities / Objects (if stated)
+
+- Proposal/RFP (one-pager, background, objectives, actions, approvals)
+- Test (Sensory; Analytical)
+- Sample Information Form (SIF): product info (SKU, lot code, category), cooking instructions, holding protocol, delivery simulation, equipment
+- Micro Clearance (date, status)
+- Vendor (accounts, equipment list)
+- User/Roles (internal AD users, external vendor users)
+- Approvals (LM/Director approvals, bypass)
+- Files/Reports (vendor raw data, vendor reports, McCain report)
+- Raw Data / Intermediate File / Output File (question mappings, scores, comments)
+- Questions/Attributes (reference lists for consumer/descriptive tests)
+- Category Mapping (product categories to attribute sets)
+- Hold Protocol / Packaging Types
+- Project Number / Study Master (mapping)
+- Budget/PO Tracking (PO number, raised/received, cost)
+
+## ## 8.2 Key fields & validations (if stated)
+
+- Project Number: drives Study Name suggestions; new entries require admin approval.
+- Study Name: unique within Project Number context where applicable.
+- Product: SKU, lot code, category; sample codes (vendor-provided) must map to products in code legend.
+- Micro Clearance: date required for non-production samples prior to testing.
+- PO Tracking: PO number, raised/received dates, cost (for internal tracking only).
+- Transformation: question ID, match score, comment (remove/mismatch/new) must be validated before ingestion.
+- Dropdown scoping: primary/secondary/delivery types separated and validated per field.
+- Standardization: normalize blanks/NA; prevent duplicate master entries (e.g., hold protocol terms).
+
+## ## 8.3 Data quality rules (if stated)
+
+- Match scores must be recorded for all mapped questions and flagged when below configurable thresholds for review.
+- Intermediate File comments must be one of: blank (accept), remove, mismatch+[correct ID], new+[details].
+- SIF entries must not be saved with invalid dropdown selections (scoped lists only).
+- New Study Names require admin review to avoid duplicates.
+
+# # 9. Integrations & Interfaces
 
 - Systems involved:
-  - Power Apps (stakeholder and vendor portals), SQL Database (R&D and Sensory schemas), Power BI (reporting).
-- Direction / triggers / frequency (if stated):
-  - Transformation engine ingests vendor files to intermediate/output then writes to SQL; curated sensory tables populated post-test completion.
-  - Email notifications triggered on submissions, approvals, assignments, and readiness to conclude.
-  - Future (not in Phase 2): SAP/Coupa vendor master, PO/budget linkages.
-- Error handling expectations (if stated):
-  - Intermediate review loop for low-confidence mappings; manual corrections by Data Admins prior to final load.
+  - Power Apps application (Stakeholder & Vendor Portals).
+  - Azure SQL Database (sensory schema; ~35 tables total across app and sensory schemas; 19 initial sensor schema tables).
+  - Power BI reports (consuming sensory schema tables).
+  - Active Directory for internal users; external email-based accounts for vendors.
+  - Email notifications for workflow events.
+- Direction / data flow:
+  - Vendor uploads → Data Transformation (raw → intermediate → output) → sensory schema tables → Power BI.
+  - Stakeholder inputs (RFP, SIF, approvals) → app tables → (on completion) persisted to sensory schema.
+- Triggers/events/frequency:
+  - Notifications on vendor submissions, approval requests, SIF requests, transformation pending/completed, and test conclusion attempts.
+- Error handling expectations:
+  - Clear error messages on failed uploads/transformation; ability to re-upload raw/intermediate files; do not ingest to final tables until verification complete.
+- Future (out of scope this phase):
+  - Potential integration with SAP/Coupa for vendor master/PO; supplier/spec platforms (e.g., TraceGains).
 
-# 10. Reporting / Analytics (if applicable)
+# # 10. Reporting / Analytics (if applicable)
 
 - Dashboards/reports required:
-  - Power BI reports showing tested products, results, counts of tests by region/test type, and improved filters for completed tests.
+  - Power BI reports showing products tested, results, count of tests by region and test types.
 - Filters/dimensions:
-  - Region, test type (sensory vs analytical), product, status; additional filters as feasible.
+  - Region, country, test type (consumer/descriptive/analytical), product, status.
 - Intended users:
-  - Sensory UX leads, R&D leads, line managers, sensory directors, analytical leads, data team.
+  - Internal stakeholders (Sensory UX Leads, R&D Leads, Line Managers, Sensory Directors, Data Admins).
 
-# 11. SLAs & Operational Expectations
+# # 11. SLAs & Operational Expectations
 
 - SLAs or processing expectations (if stated):
-  - Not defined; incident response currently handled by vendor support resources.
+  - None stated for response times or availability; performance/security testing status unclear.
 - Operational ownership/support model (if stated):
-  - Vendor provides incident support: 1 Power Apps developer and 1 Python engineer for transformation; enhancements excluded from support scope.
-  - Reactive monitoring via user-reported issues; no formal observability tooling in place (to be addressed).
+  - Incident-only support by vendor: one Power Apps developer and one Python (transformation) engineer; issues tracked in internal tooling and Excel; reactive monitoring.
+- User provisioning via platform/IT; external vendor licenses required.
 
-# 12. Risks, Dependencies, and Assumptions
+# # 12. Risks, Dependencies, and Assumptions
 
 - Risks:
-  - Transformation matching accuracy remains below target; supervised improvement not implemented as promised.
-  - UX limitations reduce adoption efficiency; increased training and support load.
-  - Lack of performance/security testing despite external access.
-  - Post‑completion data immutability currently blocks corrections; risk of data discrepancies in curated tables.
+  - UX limitations may hinder adoption and efficiency.
+  - Low transformation match accuracy increases manual workload and risk of errors.
+  - No confirmed security/performance testing for external vendor portal exposure.
+  - Lack of availability monitoring leads to reactive issue discovery.
+  - Post-completion edit capability without proper audit could impact data integrity if not well controlled.
 - Dependencies:
-  - Platform team (licensing/access provisioning for internal/external users).
-  - Vendor support for Power Apps and Python transformation module.
-  - Future SAP/Coupa integrations (Phase 3/future) dependent on corporate programs.
-- Assumptions:
-  - None stated beyond the provided inputs.
+  - Platform/IT for user provisioning and external license management.
+  - Vendor support (Power Apps, Python) for incident resolution and potential enhancements.
+  - Power BI for reporting consumption; Azure SQL sensory schema for final data.
+  - External vendors for timely proposal/data submissions.
 
-# 13. Timeline & Milestones
+# # 13. Timeline & Milestones
 
-| Milestone | Date/Window | Notes |
-| --- | --- | --- |
-| Requirements (initial SOL) | Late Sep–Oct 2024 | Initial requirements finalized; development began October 2024 |
-| Initial Go‑Live | Early March 2025 | Live Feb; official early March 2025 |
-| Hypercare | March 2025 | High incident volume initially; stabilized over time |
-| Phase 2 Estimation | Week of 2025-06-02 (target) | Rough order-of-magnitude estimate requested by Angela |
-| Phase 2 Delivery Window (indicative) | 3–6 months (TBD) | Parallelizable UX and workflow items; specifics to be planned |
+- Key milestones/dates (if stated):
+  - Requirements finalized: October 2024 (Phase 1).
+  - Go-live: Early March 2025; ~3 months in production as of May 30, 2025.
+- Release approach (if stated):
+  - Phase 2 window discussed as 3–6 months (to be refined based on detailed sizing).
 
-# 14. Open Questions (to finalize BRD)
+# # 14. Open Questions (to finalize BRD)
 
-- What is the target transformation matching accuracy threshold (e.g., % exact/acceptable matches) and how will supervised learning be implemented/validated?
-- Which fields should be locked by pre‑RFP approval and which remain editable without re‑approval?
-- Scope and governance for post‑completion edits: which roles, which fields, and required approvals (if any)?
-- Collaboration rules for multi‑editor editing (conflict resolution approach, field-level locking vs. change log).
-- Specific performance and availability targets (e.g., response times, uptime) and monitoring tools to be used.
-- Security testing scope and ownership (vulnerability assessment, pen test, frequency) given external vendor access.
-- Exact filters and search dimensions required for completed test views and Power BI.
-- Detailed definition of non‑product project types and minimal required fields/workflow steps.
-- Study Name–Project Number rules (one-to-one vs one-to-many) and approval SLAs for adding new mappings.
-- Final list of SIF dropdown categories and allowed values per category (primary/secondary/delivery types).
-- User base forecast: confirm expected active users within a year (50–100 vs other growth projections) to size performance testing.
-- Document generation templates: confirm PowerPoint templates and fields for one‑pager and McCain report.
+1. OQ-1: What are the target response times and concurrency expectations for key workflows (e.g., SIF save, file upload)?
+2. OQ-2: What security testing (if any) has been completed for the external vendor portal, and what additional testing is required (scope, tools, timing)?
+3. OQ-3: What availability monitoring and alerting approach should be implemented (tooling, alert recipients, thresholds)?
+4. OQ-4: What is the acceptable transformation match accuracy threshold for auto-accept vs. review (define score bands)?
+5. OQ-5: Who approves post-completion edits by Data Admins, and what audit/reporting is required for such edits?
+6. OQ-6: Define the exact one-pager PPT template fields and layout for automated export.
+7. OQ-7: Confirm the full list of dropdowns requiring scoping (e.g., primary vs. secondary package types) and authoritative value lists.
+8. OQ-8: For non-product research projects, what minimum fields are required to create and complete a test without SIF?
+9. OQ-9: Should Line Managers have full Sensory Lead capabilities when overseeing testing, or a subset? Specify permissions.
+10. OQ-10: What filters/search criteria are required for Completed Tests (final list) and should these be mirrored in Power BI?
+11. OQ-11: Confirm expected user growth beyond 100 users and any regional constraints that impact access or data residency.
+12. OQ-12: Are there near-term integration priorities (e.g., SAP/Coupa for PO fields) that must be designed for, even if not delivered in Phase 2?
 
-# 15. Source Notes
+# # 15. Source Notes
 
-- Primary notes used: INPUTS_TEXT (RnD Sensory - Roadmap Discussion, 2025-05-30 meeting transcript).
+- Primary notes used: INPUTS_TEXT (RnD Sensory - Roadmap Discussion-20250530 meeting transcript).
 - Brownfield notes used: None provided.
